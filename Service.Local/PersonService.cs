@@ -46,6 +46,11 @@ namespace Service.Local
             return null;
         }
 
+        public ICollection<Person> Read()
+        {
+            return new List<Person>(_people);
+        }
+
         public void Update(Person entity)
         {
             var person = Read(entity.PersonId);

@@ -56,6 +56,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -64,6 +65,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Commands.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -74,6 +76,14 @@
     <ProjectReference Include="..\Models\Models.csproj">
       <Project>{544dd432-2477-491e-a734-385a3a177e13}</Project>
       <Name>Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Service.Interfaces\Service.Interfaces.csproj">
+      <Project>{D8F68007-F2D9-47F0-9612-F3A764990120}</Project>
+      <Name>Service.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Service.Local\Service.Local.csproj">
+      <Project>{E8CE7258-15B8-4BB8-A782-17CAC2111E00}</Project>
+      <Name>Service.Local</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
