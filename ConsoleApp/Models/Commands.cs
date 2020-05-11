@@ -9,6 +9,8 @@ namespace ConsoleApp.Models
     public enum Commands
     {
         Exit,
-        Edit
+        Edit,
+        Add,
+        Delete
     }
 }

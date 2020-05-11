@@ -50,11 +50,16 @@ namespace ConsoleApp
             {
                 switch (command)
                 {
-                    //TODO uzupełnić o komendy Add i Delete
                     case Commands.Exit:
                         return false;
                     case Commands.Edit:
                         EditPerson(id);
+                        break;
+                    case Commands.Add:
+                        AddPerson();
+                        break;
+                    case Commands.Delete:
+                        Service.Delete(id);
                         break;
                     default:
                         Console.WriteLine("Nieznana komenda");
@@ -66,10 +71,15 @@ namespace ConsoleApp
             return true;
         }
 
-        private static void EditPerson(int id)
+        private static void AddPerson()
         {
-            var person = Service.Read(id);
+            var person = new Person();
+            EditPerson(person);
+            Service.Create(person);
+        }
 
+        static void EditPerson(Person person)
+        {
             Console.WriteLine("Imię");
             SendKeys.SendWait(person.FirstName);
             person.FirstName = Console.ReadLine();
@@ -83,7 +93,14 @@ namespace ConsoleApp
             Console.WriteLine("Data urodzenia");
             SendKeys.SendWait(person.BirthDate.ToShortDateString());
             person.BirthDate = DateTime.Parse(Console.ReadLine());
+        }
 
+        static void EditPerson(int id)
+        {
+            var person = Service.Read(id);
+            if (person == null)
+                return;
+            EditPerson(person);
             Service.Update(person);
         }
     }
