@@ -27,7 +27,7 @@ namespace ConsoleApp
         private static void DisplayPeople()
         {
             var format = "{0, -3} {1, -15} {2, -15} {3, -10}";
-            Console.WriteLine(string.Format(format, "Id", "Nazwisko", "Imię", "Data urodzenia"));
+            Console.WriteLine(string.Format(format, Properties.Resources.Id, Properties.Resources.LastName, Properties.Resources.FirstName, Properties.Resources.BirthDate));
             var people = Service.Read();
             foreach (var person in people)
             {
@@ -62,7 +62,7 @@ namespace ConsoleApp
                         Service.Delete(id);
                         break;
                     default:
-                        Console.WriteLine("Nieznana komenda");
+                        Console.WriteLine(Properties.Resources.UnknownCommand);
                         Console.ReadKey();
                         break;
                 }
@@ -80,17 +80,17 @@ namespace ConsoleApp
 
         static void EditPerson(Person person)
         {
-            Console.WriteLine("Imię");
+            Console.WriteLine(Properties.Resources.FirstName);
             SendKeys.SendWait(person.FirstName);
             person.FirstName = Console.ReadLine();
 
 
-            Console.WriteLine("Nazwisko");
+            Console.WriteLine(Properties.Resources.LastName);
             SendKeys.SendWait(person.LastName);
             person.LastName = Console.ReadLine();
 
 
-            Console.WriteLine("Data urodzenia");
+            Console.WriteLine(Properties.Resources.BirthDate);
             SendKeys.SendWait(person.BirthDate.ToShortDateString());
             person.BirthDate = DateTime.Parse(Console.ReadLine());
         }
