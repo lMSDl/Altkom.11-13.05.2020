@@ -32,20 +32,27 @@ namespace Service.Local
 
         public void Delete(int id)
         {
-            //TODO 2. znalezienie obiektu na liście i usunięcie go
-            throw new NotImplementedException();
+            var person = Read(id);
+            _people.Remove(person);
         }
 
         public Person Read(int id)
         {
-            //TODO 1. znalezienie obiektu na liście i zwrócenie go
-            throw new NotImplementedException();
+            foreach (var person in _people)
+            {
+                if (person.PersonId == id)
+                    return person;
+            }
+            return null;
         }
 
         public void Update(Person entity)
         {
-            //TODO 3. usunięcie obiektu o tym samym id i dodanie nowego do listy
-            throw new NotImplementedException();
+            var person = Read(entity.PersonId);
+            if (person == null)
+                return;
+            Delete(entity.PersonId);
+            _people.Add(entity);
         }
     }
 }
