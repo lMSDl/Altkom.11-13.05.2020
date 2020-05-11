@@ -26,15 +26,19 @@ namespace ConsoleApp
 
         private static void DisplayPeople()
         {
+            var strings = new List<string>();
+
             var format = "{0, -3} {1, -15} {2, -15} {3, -10}";
-            Console.WriteLine(string.Format(format, Properties.Resources.Id, Properties.Resources.LastName, Properties.Resources.FirstName, Properties.Resources.BirthDate));
+            strings.Add(string.Format(format, Properties.Resources.Id, Properties.Resources.LastName, Properties.Resources.FirstName, Properties.Resources.BirthDate));
             var people = Service.Read();
             foreach (var person in people)
             {
-                //Console.WriteLine(person.PersonId + "\t" + person.LastName + "\t" + person.FirstName + "\t" + person.BirthDate);
-                Console.WriteLine(string.Format(format, person.PersonId, person.LastName, person.FirstName, person.BirthDate.ToLongDateString()));
-                //Console.WriteLine($"{person.PersonId}\t{person.LastName}\t{person.FirstName}\t{person.BirthDate}");
+                //strings.Add(person.PersonId + "\t" + person.LastName + "\t" + person.FirstName + "\t" + person.BirthDate);
+                strings.Add(string.Format(format, person.PersonId, person.LastName, person.FirstName, person.BirthDate.ToLongDateString()));
+                //strings.Add($"{person.PersonId}\t{person.LastName}\t{person.FirstName}\t{person.BirthDate}");
             }
+
+            Display(string.Join("\n", strings));
         }
 
         static bool ExecuteCommand(string input)
@@ -61,11 +65,12 @@ namespace ConsoleApp
                     case Commands.Delete:
                         Service.Delete(id);
                         break;
-                    default:
-                        Console.WriteLine(Properties.Resources.UnknownCommand);
-                        Console.ReadKey();
-                        break;
                 }
+            }
+            else
+            {
+                Display(Properties.Resources.UnknownCommand);
+                Console.ReadKey();
             }
 
             return true;
@@ -80,19 +85,29 @@ namespace ConsoleApp
 
         static void EditPerson(Person person)
         {
-            Console.WriteLine(Properties.Resources.FirstName);
-            SendKeys.SendWait(person.FirstName);
-            person.FirstName = Console.ReadLine();
+            person.FirstName = ReadPersonData(Properties.Resources.FirstName, person.FirstName);
+            person.LastName = ReadPersonData(Properties.Resources.LastName, person.LastName);
 
+            DateTime birthDate;
+            do
+            {
+                Display(Properties.Resources.BirthDate);
+                SendKeys.SendWait(person.BirthDate.ToShortDateString());
+            }
+            while (!DateTime.TryParse(Console.ReadLine(), out birthDate));
+            person.BirthDate = birthDate;
+        }
 
-            Console.WriteLine(Properties.Resources.LastName);
-            SendKeys.SendWait(person.LastName);
-            person.LastName = Console.ReadLine();
-
-
-            Console.WriteLine(Properties.Resources.BirthDate);
-            SendKeys.SendWait(person.BirthDate.ToShortDateString());
-            person.BirthDate = DateTime.Parse(Console.ReadLine());
+        private static string ReadPersonData(string label, string currentValue)
+        {
+            string line;
+            do
+            {
+                Display(label);
+                SendKeys.SendWait(currentValue);
+                line = Console.ReadLine();
+            } while (string.IsNullOrWhiteSpace(line));
+            return line;
         }
 
         static void EditPerson(int id)
@@ -102,6 +117,13 @@ namespace ConsoleApp
                 return;
             EditPerson(person);
             Service.Update(person);
+        }
+
+        static void Display(string output)
+        {
+            Console.Clear();
+            Console.WriteLine(output);
+            Console.WriteLine();
         }
     }
 }
