@@ -16,8 +16,10 @@ namespace ConsoleApp
     {
         static IService<Person> Service = new PersonService();
         delegate void OutputDelegate(string output);
+        //c++: typedef void (* OutputDelegate) (string);
 
-        static OutputDelegate Output;
+        //static OutputDelegate Output;
+        static Action<string> Output;
 
         static void Main(string[] args)
         {
@@ -114,20 +116,15 @@ namespace ConsoleApp
 
         static void EditPerson(Person person)
         {
-            person.FirstName = ReadPersonData(Properties.Resources.FirstName, person.FirstName);
-            person.LastName = ReadPersonData(Properties.Resources.LastName, person.LastName);
+            person.FirstName = ReadPersonData(Properties.Resources.FirstName, person.FirstName, null);
+            person.LastName = ReadPersonData(Properties.Resources.LastName, person.LastName, x => string.IsNullOrWhiteSpace(x));
 
-            DateTime birthDate;
-            do
-            {
-                Output?.Invoke(Properties.Resources.BirthDate);
-                SendKeys.SendWait(person.BirthDate.ToShortDateString());
-            }
-            while (!DateTime.TryParse(Console.ReadLine(), out birthDate));
-            person.BirthDate = birthDate;
+            var birthDateString = ReadPersonData(Properties.Resources.BirthDate, person.BirthDate.ToShortDateString(), x => !DateTime.TryParse(x, out _));
+            person.BirthDate = DateTime.Parse(birthDateString);
         }
 
-        private static string ReadPersonData(string label, string currentValue)
+        //delegate bool PersonDataValidator(string input); == Func<string, bool>
+        private static string ReadPersonData(string label, string currentValue, Func<string, bool> validator)
         {
             string line;
             do
@@ -135,7 +132,7 @@ namespace ConsoleApp
                 Output?.Invoke(label);
                 SendKeys.SendWait(currentValue);
                 line = Console.ReadLine();
-            } while (string.IsNullOrWhiteSpace(line));
+            } while (validator?.Invoke(line) ?? false);
             return line;
         }
 
