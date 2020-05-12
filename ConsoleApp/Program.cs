@@ -4,6 +4,7 @@ using Service.Interfaces;
 using Service.Local;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,15 +15,39 @@ namespace ConsoleApp
     class Program
     {
         static IService<Person> Service = new PersonService();
+        delegate void OutputDelegate(string output);
+
+        static OutputDelegate Output;
 
         static void Main(string[] args)
         {
+            //Podpięcie do delegata funkcji Display
+            Output += Display;
+
+            // Podpięcie do delegata funkcji anonimowej
+            //Output += delegate(string @string) {
+            //    Debug.WriteLine(DateTime.Now);
+            //    Debug.WriteLine(@string);
+            //};
+
+            //Wykorzystanie wyrażenia lambda
+            // (<NazwaParametru>) => <CiałoWyrażenia>
+            Output += (@string) => {
+                Debug.WriteLine(DateTime.Now);
+                Debug.WriteLine(@string);
+            }; 
+
+
             do
             {
-                Console.Clear();
                 DisplayPeople();
             } while (ExecuteCommand(Console.ReadLine()));
         }
+
+        //static void Logger(string @string)
+        //{
+        //    Debug.WriteLine(@string);
+        //} 
 
         private static void DisplayPeople()
         {
@@ -38,7 +63,11 @@ namespace ConsoleApp
                 //strings.Add($"{person.PersonId}\t{person.LastName}\t{person.FirstName}\t{person.BirthDate}");
             }
 
-            Display(string.Join("\n", strings));
+
+            Output?.Invoke(string.Join("\n", strings));
+            //if (Output != null)
+            //    Output(string.Join("\n", strings));
+
         }
 
         static bool ExecuteCommand(string input)
@@ -69,7 +98,7 @@ namespace ConsoleApp
             }
             else
             {
-                Display(Properties.Resources.UnknownCommand);
+                Output?.Invoke(Properties.Resources.UnknownCommand);
                 Console.ReadKey();
             }
 
@@ -91,7 +120,7 @@ namespace ConsoleApp
             DateTime birthDate;
             do
             {
-                Display(Properties.Resources.BirthDate);
+                Output?.Invoke(Properties.Resources.BirthDate);
                 SendKeys.SendWait(person.BirthDate.ToShortDateString());
             }
             while (!DateTime.TryParse(Console.ReadLine(), out birthDate));
@@ -103,7 +132,7 @@ namespace ConsoleApp
             string line;
             do
             {
-                Display(label);
+                Output?.Invoke(label);
                 SendKeys.SendWait(currentValue);
                 line = Console.ReadLine();
             } while (string.IsNullOrWhiteSpace(line));
