@@ -12,6 +12,8 @@ using System.Windows.Forms;
 using ConsoleApp.Extensions;
 using Newtonsoft.Json;
 using System.IO;
+using Newtonsoft.Json.Linq;
+using System.Xml.Serialization;
 
 namespace ConsoleApp
 {
@@ -132,6 +134,7 @@ namespace ConsoleApp
                     ToJson(type, id);
                     break;
                 case Commands.FromJson:
+                    FromJson();
                     break;
                 default:
                     Output?.Invoke(Properties.Resources.UnknownCommand);
@@ -145,7 +148,11 @@ namespace ConsoleApp
         static void ToJson(Type type, int id)
         {
             var person = Service.Read(type, id);
+            if (person == null)
+                return;
             var json = JsonConvert.SerializeObject(person, Formatting.Indented);
+            //var xml = JsonConvert.DeserializeXNode(json, type.Name).ToString();
+            
 
             using (var dialog = new SaveFileDialog()
             {
@@ -161,11 +168,46 @@ namespace ConsoleApp
 
                     using (var writer = new StreamWriter(dialog.OpenFile()))
                     {
+
+                        //new XmlSerializer(type).Serialize(writer, person);
                         writer.Write(json);
                     }
                 }
             }
+        }
 
+        static void FromJson()
+        {
+            using (var dialog = new OpenFileDialog()
+            {
+                Filter = "Json file|*.json",
+                InitialDirectory = Properties.Settings.Default.InitialDirectory
+            })
+            {
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    string json;
+                    using (var reader = new StreamReader(dialog.OpenFile()))
+                    {
+                        json = reader.ReadToEnd();
+                    }
+
+                    Person person = null;
+                    var jPerson = JObject.Parse(json);
+                    if (jPerson.Property(nameof(Student.StudentId)) != null)
+                        person = jPerson.ToObject<Student>();
+                    else if (jPerson.Property(nameof(Instructor.InstructorId)) != null)
+                        person = jPerson.ToObject<Instructor>();
+
+                    if (person != null)
+                    {
+                        if (Service.Read(person.GetType(), person.Id) == null)
+                            Service.Create(person);
+                        else
+                            Service.Update(person);
+                    }
+                }
+            }
         }
 
 
