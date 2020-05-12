@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Service.Interfaces
 {
-    public interface IService<TEntity> where TEntity : class, new()
+    public interface IService<TEntity> where TEntity : class//, new()
     {
         ICollection<TEntity> Read();
         TEntity Create(TEntity entity);
-        TEntity Read(int id);
+        TEntity Read(Type type, int id);
         void Update(TEntity entity);
-        void Delete(int id);
+        void Delete(Type type, int id);
     }
 }

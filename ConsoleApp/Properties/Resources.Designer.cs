@@ -61,6 +61,15 @@ namespace ConsoleApp.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dodatkowe informacje.
+        /// </summary>
+        internal static string AdditionalInfo {
+            get {
+                return ResourceManager.GetString("AdditionalInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Data urodzenia.
         /// </summary>
         internal static string BirthDate {
@@ -120,6 +129,15 @@ namespace ConsoleApp.Properties {
         internal static string Male {
             get {
                 return ResourceManager.GetString("Male", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Typ.
+        /// </summary>
+        internal static string Type {
+            get {
+                return ResourceManager.GetString("Type", resourceCulture);
             }
         }
         

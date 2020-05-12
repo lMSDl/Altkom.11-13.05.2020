@@ -59,22 +59,16 @@ namespace ConsoleApp
         {
             var strings = new List<string>();
 
-            var format = "{0, -3} {1, -15} {2, -15} {3, -30} {4, -10}";
-            strings.Add(string.Format(format, Properties.Resources.Id, Properties.Resources.LastName, Properties.Resources.FirstName, Properties.Resources.BirthDate, Properties.Resources.Gender));
+            var format = "{0, -3} {1, -15} {2, -15} {3, -30} {4, -10} {5, -10} {6}";
+            strings.Add(string.Format(format, Properties.Resources.Id, Properties.Resources.LastName, Properties.Resources.FirstName, Properties.Resources.BirthDate, Properties.Resources.Gender,
+                Properties.Resources.Type, Properties.Resources.AdditionalInfo));
             var people = Service.Read();
             if(FilterFunc != null)
                 people = FilterFunc(people);
             //people = FilterFunc?.Invoke(people) ?? people;
 
 
-            strings.AddRange(
-            people.Select(person => string.Format(format,
-                    person.PersonId,
-                    person.LastName,
-                    person.FirstName,
-                    person.BirthDate.ToLongDateString(),
-                    Properties.Resources.ResourceManager.GetString(person.Gender.ToString())))
-                    );
+            strings.AddRange(people.Select(person => person.ToString(format)));
 
             /*foreach (var person in people)
             {
@@ -104,9 +98,12 @@ namespace ConsoleApp
 
             //var id = splittedInput.Length > 1 ? int.Parse(splittedInput[1]) : 0;
             int id = 0;
+            Type type = null;
             if (splittedInput.Length > 1)
             {
-                id = splittedInput[1].ToInt() ?? 0;
+                type = typeof(Person).Assembly.GetType(typeof(Person).Namespace + "." + splittedInput[1], false, true);
+                if(splittedInput.Length > 2)
+                    id = splittedInput[2].ToInt() ?? 0;
             }
 
             switch (splittedInput[0].ToCommand())
@@ -114,13 +111,16 @@ namespace ConsoleApp
                 case Commands.Exit:
                     return false;
                 case Commands.Edit:
-                    EditPerson(id);
+                    EditPerson(type, id);
                     break;
                 case Commands.Add:
-                    AddPerson();
+                    if (type == typeof(Student))
+                        AddStudent();
+                    else if (type == typeof(Instructor))
+                        AddInstructor();
                     break;
                 case Commands.Delete:
-                    Service.Delete(id);
+                    Service.Delete(type, id);
                     break;
                 case Commands.Filter:
                     Filter();
@@ -147,12 +147,19 @@ namespace ConsoleApp
             FilterFunc = people => people.Where(x => x.GetAge() > 50).Where(x => x.FirstName.ToUpper().Contains('A')).ToList();
         }
 
-        private static void AddPerson()
+        private static void AddStudent()
         {
-            var person = new Person();
+            var person = new Student();
             EditPerson(person);
             Service.Create(person);
         }
+        private static void AddInstructor()
+        {
+            var person = new Instructor();
+            EditPerson(person);
+            Service.Create(person);
+        }
+
 
         static void EditPerson(Person person)
         {
@@ -179,9 +186,9 @@ namespace ConsoleApp
             return line;
         }
 
-        static void EditPerson(int id)
+        static void EditPerson(Type type, int id)
         {
-            var person = Service.Read(id);
+            var person = Service.Read(type, id);
             if (person == null)
                 return;
             EditPerson(person);
