@@ -10,6 +10,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ConsoleApp.Extensions;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace ConsoleApp
 {
@@ -25,6 +27,7 @@ namespace ConsoleApp
         //delegate ICollection<Person> FilterDelegate(ICollection<Person> people);
         static Func<ICollection<Person>, ICollection<Person>> FilterFunc;
 
+        [STAThreadAttribute]
         static void Main(string[] args)
         {
             //Podpięcie do delegata funkcji Display
@@ -125,6 +128,11 @@ namespace ConsoleApp
                 case Commands.Filter:
                     Filter();
                     break;
+                case Commands.ToJson:
+                    ToJson(type, id);
+                    break;
+                case Commands.FromJson:
+                    break;
                 default:
                     Output?.Invoke(Properties.Resources.UnknownCommand);
                     Console.ReadKey();
@@ -133,6 +141,33 @@ namespace ConsoleApp
 
             return true;
         }
+
+        static void ToJson(Type type, int id)
+        {
+            var person = Service.Read(type, id);
+            var json = JsonConvert.SerializeObject(person, Formatting.Indented);
+
+            using (var dialog = new SaveFileDialog()
+            {
+                FileName = $"{person.LastName} {person.FirstName}",
+                Filter = "Json file|*.json|All files|*.*",
+                InitialDirectory = Properties.Settings.Default.InitialDirectory})
+            {
+                var result = dialog.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    Properties.Settings.Default.InitialDirectory = dialog.FileName;
+                    Properties.Settings.Default.Save();
+
+                    using (var writer = new StreamWriter(dialog.OpenFile()))
+                    {
+                        writer.Write(json);
+                    }
+                }
+            }
+
+        }
+
 
         private static void Filter()
         {

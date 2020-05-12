@@ -24,6 +24,11 @@ namespace Models
         public int StudentId { get; set; }
         public int YearsOfStudy { get; set; }
 
+        public bool ShouldSerializeYearsOfStudy()
+        {
+            return YearsOfStudy > 2;
+        }
+
         public override int Id { get => StudentId; set => StudentId = value; }
 
         protected override string GetAdditionalInfo()

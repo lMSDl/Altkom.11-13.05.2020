@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,7 +37,10 @@ namespace Models
         public DateTime BirthDate { get; set; }
         public Genders Gender { get; set; }
 
+        [JsonIgnore]
         public abstract int Id { get; set; }
+
+
 
         public string ToString(string format)
         {
