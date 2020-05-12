@@ -55,6 +55,7 @@ namespace ConsoleApp
         {
             var strings = new List<string>();
 
+            //TODO 2. Dodać kolumnę z płcią
             var format = "{0, -3} {1, -15} {2, -15} {3, -10}";
             strings.Add(string.Format(format, Properties.Resources.Id, Properties.Resources.LastName, Properties.Resources.FirstName, Properties.Resources.BirthDate));
             var people = Service.Read();
@@ -121,6 +122,8 @@ namespace ConsoleApp
 
             var birthDateString = ReadPersonData(Properties.Resources.BirthDate, person.BirthDate.ToShortDateString(), x => !DateTime.TryParse(x, out _));
             person.BirthDate = DateTime.Parse(birthDateString);
+
+            //TODO 3. Uzupełnić dane o płci
         }
 
         //delegate bool PersonDataValidator(string input); == Func<string, bool>

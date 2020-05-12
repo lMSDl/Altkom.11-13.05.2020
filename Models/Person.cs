@@ -12,5 +12,7 @@ namespace Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime BirthDate { get; set; }
+
+        //TODO 1. Utworzyć enum Genders i dodać właściwość dla płci Person
     }
 }
