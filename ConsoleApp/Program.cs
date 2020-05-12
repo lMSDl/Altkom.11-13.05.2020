@@ -21,6 +21,9 @@ namespace ConsoleApp
         //static OutputDelegate Output;
         static Action<string> Output;
 
+        //delegate ICollection<Person> FilterDelegate(ICollection<Person> people);
+        static Func<ICollection<Person>, ICollection<Person>> FilterFunc;
+
         static void Main(string[] args)
         {
             //Podpięcie do delegata funkcji Display
@@ -51,8 +54,6 @@ namespace ConsoleApp
         //    Debug.WriteLine(@string);
         //} 
 
-        //TODO 1. Zadeklarować delegata, który zwraca i przyjmuje ICollection<Person>
-
         private static void DisplayPeople()
         {
             var strings = new List<string>();
@@ -60,7 +61,9 @@ namespace ConsoleApp
             var format = "{0, -3} {1, -15} {2, -15} {3, -30} {4, -10}";
             strings.Add(string.Format(format, Properties.Resources.Id, Properties.Resources.LastName, Properties.Resources.FirstName, Properties.Resources.BirthDate, Properties.Resources.Gender));
             var people = Service.Read();
-            //TODO 2 Zastosować delegata, jeśli jest różny od null, w celu filtracji kolekcji people
+            if(FilterFunc != null)
+                people = FilterFunc(people);
+            //people = FilterFunc?.Invoke(people) ?? people;
 
 
             strings.AddRange(
@@ -134,16 +137,15 @@ namespace ConsoleApp
 
         private static void Filter()
         {
-            //TODO 3. przypisać do delegata filtracji wyszukanie:
-            //TODO 3a. osób, których id jest > 1
+            //FilterFunc = people => { return people.Where(x => x.PersonId > 1).ToList(); };
 
-            //from x in Service.Read() where ...
-            //Service.Read().Where(x =>
-            
-            //TODO 3b. osób, które mają literę A w nazwisku
-            //TODO 3c. osób urodzonych przed 1980 rokiem
-            //TODO 3d. osób starszych niż 50 lat oraz literą a w imieniu
-            throw new NotImplementedException();
+            //FilterFunc = people => people.Where(x => x.LastName.ToUpper().Contains('A')).ToList();
+
+            //FilterFunc = people => people.Where(x => x.BirthDate < new DateTime(1980, 1, 1)).ToList();
+            //FilterFunc = people => people.Where(x => x.BirthDate.Year < 1980).ToList();
+
+            //FilterFunc = people => people.Where(x => new DateTime((DateTime.Now - x.BirthDate).Ticks).Year > 50).Where(x => x.FirstName.ToUpper().Contains('A')).ToList();
+            FilterFunc = people => people.Where(x => DateTime.Now.Year - x.BirthDate.Year > 50).Where(x => x.FirstName.ToUpper().Contains('A')).ToList();
         }
 
         private static void AddPerson()
