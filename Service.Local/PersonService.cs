@@ -20,11 +20,19 @@ namespace Service.Local
         public Person Create(Person entity)
         {
             int id = 0;
-            foreach (var person in _people)
-            {
-                if (person.PersonId > id)
-                    id = person.PersonId;
-            }
+
+            //id =
+            //    (from person in _people
+            //     select person.PersonId)
+            //    .Max();
+
+            id = _people.Select(person => person.PersonId).Max();
+
+            //foreach (var person in _people)
+            //{
+            //    if (person.PersonId > id)
+            //        id = person.PersonId;
+            //}
             entity.PersonId = id + 1;
             _people.Add(entity);
             return entity;
@@ -38,6 +46,22 @@ namespace Service.Local
 
         public Person Read(int id)
         {
+            //return (from x in _people
+            //        where x.PersonId == id
+            //        select x)
+            //       .SingleOrDefault();
+
+            //return _people.Where(x => x.PersonId == id).SingleOrDefault();
+
+            return _people.SingleOrDefault(x => x.PersonId == id); //pojedyncza wartość lub null
+            //return _people.Single(x => x.PersonId == id); //pojedyncza wartość lub wyjątek
+            //return _people.FirstOrDefault(x => x.PersonId == id); //pierwsza znaleziona wartość lub null
+            //return _people.First(x => x.PersonId == id); //pierwsza znaleziona wartość lub null
+
+
+
+
+
             foreach (var person in _people)
             {
                 if (person.PersonId == id)
@@ -48,7 +72,8 @@ namespace Service.Local
 
         public ICollection<Person> Read()
         {
-            return new List<Person>(_people);
+            return _people.ToList();
+            //return new List<Person>(_people);
         }
 
         public void Update(Person entity)

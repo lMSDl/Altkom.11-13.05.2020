@@ -11,6 +11,7 @@ namespace ConsoleApp.Models
         Exit,
         Edit,
         Add,
-        Delete
+        Delete,
+        Filter
     }
 }

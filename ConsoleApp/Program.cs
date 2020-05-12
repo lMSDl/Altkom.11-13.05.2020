@@ -51,6 +51,8 @@ namespace ConsoleApp
         //    Debug.WriteLine(@string);
         //} 
 
+        //TODO 1. Zadeklarować delegata, który zwraca i przyjmuje ICollection<Person>
+
         private static void DisplayPeople()
         {
             var strings = new List<string>();
@@ -58,7 +60,19 @@ namespace ConsoleApp
             var format = "{0, -3} {1, -15} {2, -15} {3, -30} {4, -10}";
             strings.Add(string.Format(format, Properties.Resources.Id, Properties.Resources.LastName, Properties.Resources.FirstName, Properties.Resources.BirthDate, Properties.Resources.Gender));
             var people = Service.Read();
-            foreach (var person in people)
+            //TODO 2 Zastosować delegata, jeśli jest różny od null, w celu filtracji kolekcji people
+
+
+            strings.AddRange(
+            people.Select(person => string.Format(format,
+                    person.PersonId,
+                    person.LastName,
+                    person.FirstName,
+                    person.BirthDate.ToLongDateString(),
+                    Properties.Resources.ResourceManager.GetString(person.Gender.ToString())))
+                    );
+
+            /*foreach (var person in people)
             {
                 //strings.Add(person.PersonId + "\t" + person.LastName + "\t" + person.FirstName + "\t" + person.BirthDate);
                 strings.Add(string.Format(format, 
@@ -68,10 +82,13 @@ namespace ConsoleApp
                     person.BirthDate.ToLongDateString(), 
                     Properties.Resources.ResourceManager.GetString(person.Gender.ToString())));
                 //strings.Add($"{person.PersonId}\t{person.LastName}\t{person.FirstName}\t{person.BirthDate}");
-            }
+            }*/
 
 
-            Output?.Invoke(string.Join("\n", strings));
+            //Output?.Invoke(string.Join("\n", strings));
+            Output?.Invoke(strings.Aggregate(/*string.Empty,*/ (a, b) => a + "\n" + b));
+
+
             //if (Output != null)
             //    Output(string.Join("\n", strings));
 
@@ -101,6 +118,9 @@ namespace ConsoleApp
                     case Commands.Delete:
                         Service.Delete(id);
                         break;
+                    case Commands.Filter:
+                        Filter();
+                        break;
                 }
             }
             else
@@ -110,6 +130,20 @@ namespace ConsoleApp
             }
 
             return true;
+        }
+
+        private static void Filter()
+        {
+            //TODO 3. przypisać do delegata filtracji wyszukanie:
+            //TODO 3a. osób, których id jest > 1
+
+            //from x in Service.Read() where ...
+            //Service.Read().Where(x =>
+            
+            //TODO 3b. osób, które mają literę A w nazwisku
+            //TODO 3c. osób urodzonych przed 1980 rokiem
+            //TODO 3d. osób starszych niż 50 lat oraz literą a w imieniu
+            throw new NotImplementedException();
         }
 
         private static void AddPerson()
