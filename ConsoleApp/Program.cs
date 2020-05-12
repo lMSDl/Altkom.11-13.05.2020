@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ConsoleApp.Extensions;
 
 namespace ConsoleApp
 {
@@ -104,32 +105,30 @@ namespace ConsoleApp
             //var id = splittedInput.Length > 1 ? int.Parse(splittedInput[1]) : 0;
             int id = 0;
             if (splittedInput.Length > 1)
-                int.TryParse(splittedInput[1], out id);
-
-            if (Enum.TryParse(splittedInput[0], true, out Commands command))
             {
-                switch (command)
-                {
-                    case Commands.Exit:
-                        return false;
-                    case Commands.Edit:
-                        EditPerson(id);
-                        break;
-                    case Commands.Add:
-                        AddPerson();
-                        break;
-                    case Commands.Delete:
-                        Service.Delete(id);
-                        break;
-                    case Commands.Filter:
-                        Filter();
-                        break;
-                }
+                id = splittedInput[1].ToInt() ?? 0;
             }
-            else
+
+            switch (splittedInput[0].ToCommand())
             {
-                Output?.Invoke(Properties.Resources.UnknownCommand);
-                Console.ReadKey();
+                case Commands.Exit:
+                    return false;
+                case Commands.Edit:
+                    EditPerson(id);
+                    break;
+                case Commands.Add:
+                    AddPerson();
+                    break;
+                case Commands.Delete:
+                    Service.Delete(id);
+                    break;
+                case Commands.Filter:
+                    Filter();
+                    break;
+                default:
+                    Output?.Invoke(Properties.Resources.UnknownCommand);
+                    Console.ReadKey();
+                    break;
             }
 
             return true;
@@ -145,7 +144,7 @@ namespace ConsoleApp
             //FilterFunc = people => people.Where(x => x.BirthDate.Year < 1980).ToList();
 
             //FilterFunc = people => people.Where(x => new DateTime((DateTime.Now - x.BirthDate).Ticks).Year > 50).Where(x => x.FirstName.ToUpper().Contains('A')).ToList();
-            FilterFunc = people => people.Where(x => DateTime.Now.Year - x.BirthDate.Year > 50).Where(x => x.FirstName.ToUpper().Contains('A')).ToList();
+            FilterFunc = people => people.Where(x => x.GetAge() > 50).Where(x => x.FirstName.ToUpper().Contains('A')).ToList();
         }
 
         private static void AddPerson()
@@ -163,8 +162,8 @@ namespace ConsoleApp
             var birthDateString = ReadPersonData(Properties.Resources.BirthDate, person.BirthDate.ToShortDateString(), x => !DateTime.TryParse(x, out _));
             person.BirthDate = DateTime.Parse(birthDateString);
 
-            var genderString = ReadPersonData(Properties.Resources.Gender, person.Gender.ToString(), x => !Enum.TryParse<Genders>(x, out _));
-            person.Gender = (Genders)Enum.Parse(typeof(Genders), genderString);
+            var genderString = ReadPersonData(Properties.Resources.Gender, person.Gender.ToString(), x => x.ToEnum<Genders>() == null);
+            person.Gender = genderString.ToEnum<Genders>().Value;
         }
 
         //delegate bool PersonDataValidator(string input); == Func<string, bool>
