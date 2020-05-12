@@ -12,9 +12,9 @@ namespace Service.Local
     {
         private readonly ICollection<Person> _people = new List<Person>
         {
-            new Person{PersonId = 1, FirstName = "Adam", LastName = "Adamski", BirthDate = new DateTime(1976, 1, 23)},
-            new Person{PersonId = 2, FirstName = "Piotr", LastName = "Piotrowski", BirthDate = new DateTime(1980, 5, 3)},
-            new Person{PersonId = 3, FirstName = "Katarzyna", LastName = "Katarzyńska", BirthDate = new DateTime(1949, 2, 19)},
+            new Person{PersonId = 1, FirstName = "Adam", LastName = "Adamski", BirthDate = new DateTime(1976, 1, 23), Gender = Genders.Male},
+            new Person{PersonId = 2, FirstName = "Piotr", LastName = "Piotrowski", BirthDate = new DateTime(1980, 5, 3), Gender = Genders.Male},
+            new Person{PersonId = 3, FirstName = "Katarzyna", LastName = "Katarzyńska", BirthDate = new DateTime(1949, 2, 19), Gender = Genders.Female},
         };
 
         public Person Create(Person entity)
