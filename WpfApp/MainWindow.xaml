@@ -3,64 +3,35 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:properties="clr-namespace:WpfApp.Properties"
         xmlns:local="clr-namespace:WpfApp"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="Okno" Height="450" Width="800">
 
-    <StackPanel>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="2*" />
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="50" />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="2*" />
-        </Grid.ColumnDefinitions>
-        
-        <Button Grid.Row="0" Grid.Column="0" Content="Button1"/>
-        <Button Grid.Row="1" Grid.Column="1" Content="Button2"/>
-        <Button Grid.Row="2" Grid.Column="2" Content="Button3"/>
-        <Button Grid.Row="3" Grid.Column="3" Content="Button4"/>
-        <Button Grid.Row="3" Grid.RowSpan="1" Grid.Column="1" Grid.ColumnSpan="2"  Content="Button5"/>
+
+        <DataGrid ItemsSource="{Binding People}" SelectedItem="{Binding SelectedPerson}" AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="FirstName" Binding="{Binding FirstName}" />
+                <DataGridTextColumn Header="LastName" Binding="{Binding LastName}"/>
+                <DataGridTextColumn Header="BirthDate" Binding="{Binding BirthDate}"/>
+                <DataGridTextColumn Header="Specialization" Binding="{Binding Specialization}"/>
+                <DataGridTextColumn Header="YearsOfStudy" Binding="{Binding YearsOfStudy}"/>
+                <DataGridTextColumn Header="Test" Binding="{Binding Test}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="1">
+            <Button Content="Refresh" Click="RefreshButton_Click"/>
+            <Button Content="Edit" Click="EditButton_Click"/>
+            <Button Content="Delete" Click="DeleteButton_Click"/>
+        </StackPanel>
     </Grid>
-
-
-        <Button Content="Button1"/>
-        <Button Content="Button2"/>
-        <Button Content="Button3"/>
-        <Button Content="Button4"/>
-
-        <WrapPanel>
-            <Button Content="Button1"/>
-            <Button Content="Button2"/>
-            <Button Content="Button3"/>
-            <Button Content="Button4"/>
-        </WrapPanel>
-
-        <DockPanel>
-            <Button Content="Button2" DockPanel.Dock="Left"/>
-            <Button Content="Button3" DockPanel.Dock="Right"/>
-            <Button Content="Button1" DockPanel.Dock="Bottom"/>
-            <Button Content="Button4" DockPanel.Dock="Top"/>
-            <Button Content="Button5" />
-            <Button Content="Button6" />
-            <Button Content="Button7" />
-        </DockPanel>
-
-        <Canvas>
-            <Button Content="Button1" Canvas.Left="100" Canvas.Top="50" />
-            <Button Content="Button2"/>
-            <Button Content="Button3" Canvas.Left="90" Canvas.Top="40" />
-            <Button Content="Button4" Canvas.Left="80" Canvas.Top="30" />
-        </Canvas>
-        
-    </StackPanel>
     
     
 </Window>
