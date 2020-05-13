@@ -24,7 +24,7 @@ namespace WpfApp
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private IService<Person> Service = new PersonService();
+        private IServiceAsync<Person> Service = new PersonServiceAsync();
 
         public MainWindow()
         {
@@ -37,26 +37,26 @@ namespace WpfApp
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        private async void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            People = Service.Read();
+            People = await Service.ReadAsync();
             PropertyChanged(this, new PropertyChangedEventArgs(nameof(People)));
         }
 
-        private void EditButton_Click(object sender, RoutedEventArgs e)
+        private async void EditButton_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedPerson == null)
                 return;
             var dialog = new PersonWindow(SelectedPerson);
             dialog.ShowDialog();
-            Service.Update(SelectedPerson);
+            await Service.UpdateAsync(SelectedPerson);
         }
 
-        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        private async void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedPerson == null)
                 return;
-            Service.Delete(SelectedPerson.GetType(), SelectedPerson.Id);
+            await Service.DeleteAsync(SelectedPerson.GetType(), SelectedPerson.Id);
             RefreshButton_Click(this, new RoutedEventArgs());
         }
     }
