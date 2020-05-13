@@ -19,7 +19,7 @@ namespace ConsoleApp
 {
     class Program
     {
-        static IService<Person> Service = new PersonService();
+        static IService<Person> Service = new DAL.Services.PersonService();
         delegate void OutputDelegate(string output);
         //c++: typedef void (* OutputDelegate) (string);
 
