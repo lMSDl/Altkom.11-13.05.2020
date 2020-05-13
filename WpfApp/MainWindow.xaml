@@ -17,9 +17,9 @@
 
         <DataGrid ItemsSource="{Binding People}" SelectedItem="{Binding SelectedPerson}" AutoGenerateColumns="False" IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="FirstName" Binding="{Binding FirstName}" />
-                <DataGridTextColumn Header="LastName" Binding="{Binding LastName}"/>
-                <DataGridTextColumn Header="BirthDate" Binding="{Binding BirthDate}"/>
+                <DataGridTextColumn Header="{x:Static properties:Resources.FirstName}" Binding="{Binding FirstName}" />
+                <DataGridTextColumn Header="{x:Static properties:Resources.LastName}" Binding="{Binding LastName}"/>
+                <DataGridTextColumn Header="{x:Static properties:Resources.BirthDate}" Binding="{Binding BirthDate}"/>
                 <DataGridTextColumn Header="Specialization" Binding="{Binding Specialization}"/>
                 <DataGridTextColumn Header="YearsOfStudy" Binding="{Binding YearsOfStudy}"/>
                 <DataGridTextColumn Header="Test" Binding="{Binding Test}"/>
